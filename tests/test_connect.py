@@ -7,7 +7,8 @@ class TestVppConnect(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         logging.debug("{} setUpClass({})".format(__name__.strip('_'), locals()))
-        cls.vpp = VPPApi("TestVPPConnect")
+        cls.test_name = __name__
+        cls.vpp = VPPApi(cls.test_name)
         if not cls.vpp.json_files:
             logging.error("The VPP API could not be started, There are no json files.")
             exit(-1)
@@ -20,11 +21,12 @@ class TestVppConnect(unittest.TestCase):
         return super().tearDownClass()
     
     def setUp(cls):
-        # Connect to vpp
         logging.debug("\n{} setUp({})".format(__name__.strip('_'), locals()))
+        cls.vpp.connect()
 
     def tearDown(cls):
         logging.debug("{} tearDown({})".format(__name__.strip('_'), locals()))
+        cls.vpp.disconnect()
 
     def test_upper(cls):
         cls.assertEqual('foo'.upper(), 'FOO')

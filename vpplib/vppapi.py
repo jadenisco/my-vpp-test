@@ -15,6 +15,7 @@
 import logging
 import os
 import fnmatch
+from vpp_papi import VPPApiClient
 
 # Constants
 LD_LIBRARY_PATH = '/usr/lib/x86_64-linux-gnu/'
@@ -25,26 +26,23 @@ class VPPApi():
     def __init__(self, clientname='vpp'):
         logging.debug("{} __init__({})".format(__name__.strip('_'), locals()))
 
+        self.clientname = clientname
         self.ld_library_path = LD_LIBRARY_PATH
         self.json_dir  = JSON_DIR
+
         try:
             self.prev_ld_library_path = os.environ["LD_LIBRARY_PATH"]
         except:
             self.prev_ld_library_path = None
 
         os.environ["LD_LIBRARY_PATH"] = self.ld_library_path
-
-        logging.debug("  json_dir: {}".format(self.json_dir))
         logging.debug("  LD_LIBRARY_PATH: {}".format(os.environ["LD_LIBRARY_PATH"]))  
 
+        logging.debug("  json_dir: {}".format(self.json_dir))
         self.json_files = []
         for root, dirnames, filenames in os.walk(self.json_dir):
             for filename in fnmatch.filter(filenames, '*.api.json'):
                 self.json_files.append(os.path.join(self.json_dir, filename))
-
-        #if not self.vpp_json_files:
-        #    logging.error('No json api files found.')
-        #    self.error = -1
 
     def __del__(self):
         logging.debug("{} __del__({})".format(__name__.strip('_'), locals()))
@@ -52,5 +50,13 @@ class VPPApi():
         if self.prev_ld_library_path:
             os.environ["LD_LIBRARY_PATH"] = self.ld_library_path
 
-    def connect():
+    def connect(self):
         logging.debug("{} connect({})".format(__name__.strip('_'), locals()))
+
+        self.vpp = VPPApiClient(apifiles=self.json_files)
+        self.vpp.connect(self.clientname)
+
+    def disconnect(self):
+        logging.debug("{} disconnect({})".format(__name__.strip('_'), locals()))
+
+        self.vpp.disconnect()

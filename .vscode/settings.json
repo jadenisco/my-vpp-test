@@ -1,7 +1,9 @@
 {
     "cSpell.words": [
+        "apifiles",
         "clientname",
         "libvppapiclient",
+        "papi",
         "venv",
         "vppapi",
         "vpplib"
