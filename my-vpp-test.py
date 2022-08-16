@@ -5,7 +5,7 @@ my-vpp-test.py
 import argparse
 import logging
 import unittest
-import vpplib.utils
+import vpplib.vppapi
 
 def vpp_main(args):
 
