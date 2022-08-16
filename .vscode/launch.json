@@ -11,6 +11,7 @@
             "program": "${workspaceFolder}/my-vpp-test.py",
             "console": "integratedTerminal",
             "justMyCode": true,
+            "sudo": true,
             "args": ["-d"]
         }
     ]
