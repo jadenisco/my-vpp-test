@@ -43,6 +43,10 @@ class VPPApi():
         for root, dirnames, filenames in os.walk(self.json_dir):
             for filename in fnmatch.filter(filenames, '*.api.json'):
                 self.json_files.append(os.path.join(self.json_dir, filename))
+        if not self.json_files:
+            self.client = None
+        else:
+            self.client = VPPApiClient(apifiles=self.json_files)
 
     def __del__(self):
         logging.debug("{} __del__({})".format(__name__.strip('_'), locals()))
@@ -52,11 +56,8 @@ class VPPApi():
 
     def connect(self):
         logging.debug("{} connect({})".format(__name__.strip('_'), locals()))
-
-        self.vpp = VPPApiClient(apifiles=self.json_files)
-        self.vpp.connect(self.clientname)
+        self.client.connect(self.clientname)
 
     def disconnect(self):
         logging.debug("{} disconnect({})".format(__name__.strip('_'), locals()))
-
-        self.vpp.disconnect()
+        self.client.disconnect()

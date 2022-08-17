@@ -9,22 +9,30 @@ class TestVppConnect(unittest.TestCase):
         logging.debug("{} setUpClass({})".format(__name__.strip('_'), locals()))
         cls.test_name = __name__
         cls.vpp = VPPApi(cls.test_name)
+        if not cls.vpp.client:
+            logging.error("The VPP API Client was not created.")
+            exit(-1)
+        cls.vpp.connect()
         return super().setUpClass()
 
     @classmethod
     def tearDownClass(cls) -> None:
         logging.debug("{} tearDownClass({})".format(__name__.strip('_'), locals()))
+        cls.vpp.disconnect()
         del cls.vpp
         return super().tearDownClass()
     
     def setUp(cls):
+        # Setup for individual tests
         logging.debug("\n{} setUp({})".format(__name__.strip('_'), locals()))
-        cls.assertIsNotNone(cls.vpp.json_files, msg="The VPP API could not be started, There are no json files.")
-        cls.vpp.connect()
 
     def tearDown(cls):
         logging.debug("{} tearDown({})".format(__name__.strip('_'), locals()))
-        cls.vpp.disconnect()
+
+    def test_show_version(cls):
+        logging.debug("{} test_show_version({})".format(__name__.strip('_'), locals()))
+        v = cls.vpp.client.api.show_version()
+        logging.info("VPP Version: {}".format(v.version))
 
     def test_upper(cls):
         cls.assertEqual('foo'.upper(), 'FOO')
