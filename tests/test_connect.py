@@ -12,7 +12,7 @@ class TestVppConnect(unittest.TestCase):
         cls.test_name = __name__
         cls.vpp = VPPApi(cls.test_name)
         if not cls.vpp.client:
-            logging.critical("The VPP API Client was not created.")
+            cls.logger.critical("The VPP API Client was not created.")
             exit(-1)
         cls.vpp.connect()
         return super().setUpClass()
