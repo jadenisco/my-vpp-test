@@ -6,33 +6,35 @@ class TestVppConnect(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        logging.debug("{} setUpClass({})".format(__name__.strip('_'), locals()))
+        cls.logger = logging.getLogger(__name__)
+        cls.logger.addHandler(logging.NullHandler())
+        cls.logger.debug("{} setUpClass({})".format(__name__.strip('_'), locals()))
         cls.test_name = __name__
         cls.vpp = VPPApi(cls.test_name)
         if not cls.vpp.client:
-            logging.error("The VPP API Client was not created.")
+            logging.critical("The VPP API Client was not created.")
             exit(-1)
         cls.vpp.connect()
         return super().setUpClass()
 
     @classmethod
     def tearDownClass(cls) -> None:
-        logging.debug("{} tearDownClass({})".format(__name__.strip('_'), locals()))
+        cls.logger.debug("{} tearDownClass({})".format(__name__.strip('_'), locals()))
         cls.vpp.disconnect()
         del cls.vpp
         return super().tearDownClass()
     
     def setUp(cls):
         # Setup for individual tests
-        logging.debug("\n{} setUp({})".format(__name__.strip('_'), locals()))
+        cls.logger.debug("\n{} setUp({})".format(__name__.strip('_'), locals()))
 
     def tearDown(cls):
-        logging.debug("{} tearDown({})".format(__name__.strip('_'), locals()))
+        cls.logger.debug("{} tearDown({})".format(__name__.strip('_'), locals()))
 
     def test_show_version(cls):
-        logging.debug("{} test_show_version({})".format(__name__.strip('_'), locals()))
+        cls.logger.debug("{} test_show_version({})".format(__name__.strip('_'), locals()))
         v = cls.vpp.client.api.show_version()
-        logging.info("VPP Version: {}".format(v.version))
+        cls.logger.info("\nVPP Version: {}".format(v.version))
 
     def test_upper(cls):
         cls.assertEqual('foo'.upper(), 'FOO')
@@ -50,4 +52,3 @@ class TestVppConnect(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

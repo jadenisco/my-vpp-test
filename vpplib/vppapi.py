@@ -24,7 +24,9 @@ JSON_DIR = '/usr/share/vpp/api/core/'
 class VPPApi():
 
     def __init__(self, clientname='vpp'):
-        logging.debug("{} __init__({})".format(__name__.strip('_'), locals()))
+        self.logger = logging.getLogger(__name__)
+        self.logger.addHandler(logging.NullHandler())
+        self.logger.debug("{} __init__({})".format(__name__.strip('_'), locals()))
 
         self.clientname = clientname
         self.ld_library_path = LD_LIBRARY_PATH
@@ -36,28 +38,29 @@ class VPPApi():
             self.prev_ld_library_path = None
 
         os.environ["LD_LIBRARY_PATH"] = self.ld_library_path
-        logging.debug("  LD_LIBRARY_PATH: {}".format(os.environ["LD_LIBRARY_PATH"]))  
+        self.logger.debug("  LD_LIBRARY_PATH: {}".format(os.environ["LD_LIBRARY_PATH"]))  
 
-        logging.debug("  json_dir: {}".format(self.json_dir))
+        self.logger.debug("  json_dir: {}".format(self.json_dir))
         self.json_files = []
         for root, dirnames, filenames in os.walk(self.json_dir):
             for filename in fnmatch.filter(filenames, '*.api.json'):
                 self.json_files.append(os.path.join(self.json_dir, filename))
         if not self.json_files:
+            logging.critical("There are no json files.")
             self.client = None
         else:
             self.client = VPPApiClient(apifiles=self.json_files)
 
     def __del__(self):
-        logging.debug("{} __del__({})".format(__name__.strip('_'), locals()))
+        self.logger.debug("{} __del__({})".format(__name__.strip('_'), locals()))
 
         if self.prev_ld_library_path:
             os.environ["LD_LIBRARY_PATH"] = self.ld_library_path
 
     def connect(self):
-        logging.debug("{} connect({})".format(__name__.strip('_'), locals()))
+        self.logger.debug("{} connect({})".format(__name__.strip('_'), locals()))
         self.client.connect(self.clientname)
 
     def disconnect(self):
-        logging.debug("{} disconnect({})".format(__name__.strip('_'), locals()))
+        self.logger.debug("{} disconnect({})".format(__name__.strip('_'), locals()))
         self.client.disconnect()
