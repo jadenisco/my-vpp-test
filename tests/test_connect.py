@@ -31,10 +31,11 @@ class TestVppConnect(unittest.TestCase):
     def tearDown(cls):
         cls.logger.debug("{} tearDown({})".format(__name__.strip('_'), locals()))
 
-    def test_show_version(cls):
+    def test_aaa_show_version(cls):
         cls.logger.debug("{} test_show_version({})".format(__name__.strip('_'), locals()))
         v = cls.vpp.client.api.show_version()
         cls.logger.info("\nVPP Version: {}".format(v.version))
+        cls.assertRegexpMatches(v.version, r'\d+.\d+-release', v.version)
 
     def test_upper(cls):
         cls.assertEqual('foo'.upper(), 'FOO')
