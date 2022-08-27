@@ -56,11 +56,3 @@ class VPPApi():
 
         if self.prev_ld_library_path:
             os.environ["LD_LIBRARY_PATH"] = self.ld_library_path
-
-    def connect(self):
-        self.logger.debug("{} connect({})".format(__name__.strip('_'), locals()))
-        self.client.connect(self.clientname)
-
-    def disconnect(self):
-        self.logger.debug("{} disconnect({})".format(__name__.strip('_'), locals()))
-        self.client.disconnect()

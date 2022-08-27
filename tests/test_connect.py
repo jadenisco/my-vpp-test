@@ -2,6 +2,7 @@ import unittest
 import logging
 from vpplib.vppapi import VPPApi
 
+@unittest.skip("VPP connect")
 class TestVppConnect(unittest.TestCase):
 
     @classmethod
@@ -14,22 +15,22 @@ class TestVppConnect(unittest.TestCase):
         if not cls.vpp.client:
             cls.logger.critical("The VPP API Client was not created.")
             exit(-1)
-        cls.vpp.connect()
         return super().setUpClass()
 
     @classmethod
     def tearDownClass(cls) -> None:
         cls.logger.debug("{} tearDownClass({})".format(__name__.strip('_'), locals()))
-        cls.vpp.disconnect()
         del cls.vpp
         return super().tearDownClass()
     
     def setUp(cls):
         # Setup for individual tests
         cls.logger.debug("\n{} setUp({})".format(__name__.strip('_'), locals()))
+        cls.vpp.client.connect(cls.vpp.clientname)
 
     def tearDown(cls):
         cls.logger.debug("{} tearDown({})".format(__name__.strip('_'), locals()))
+        cls.vpp.client.disconnect()
 
     def test_aaa_show_version(cls):
         cls.logger.debug("{} test_show_version({})".format(__name__.strip('_'), locals()))
@@ -37,13 +38,16 @@ class TestVppConnect(unittest.TestCase):
         cls.logger.info("\nVPP Version: {}".format(v.version))
         cls.assertRegexpMatches(v.version, r'\d+.\d+-release', v.version)
 
+    @unittest.skip("test_upper")
     def test_upper(cls):
         cls.assertEqual('foo'.upper(), 'FOO')
 
+    @unittest.skip("test_isupper")
     def test_isupper(cls):
         cls.assertTrue('FOO'.isupper())
         cls.assertFalse('Foo'.isupper())
 
+    @unittest.skip("test_skip")
     def test_split(cls):
         s = 'hello world'
         cls.assertEqual(s.split(), ['hello', 'world'])

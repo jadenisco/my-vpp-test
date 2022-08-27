@@ -35,10 +35,10 @@ def vpp_main(args):
 
     tests = unittest.TestLoader().discover(start_dir='./tests', pattern='test_*.py')
     rc = unittest.TextTestRunner(verbosity=verbosity, buffer=True).run(tests).wasSuccessful()
-    if rc == True:
-        exit(0)
-    else:
-        exit(1)
+    #if rc == True:
+    #    exit(0)
+    #else:
+    #    exit(1)
 
 if __name__ == '__main__':
     main_parser = argparse.ArgumentParser(
