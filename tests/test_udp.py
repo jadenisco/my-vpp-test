@@ -1,21 +1,19 @@
 import unittest
 import logging
 from vpplib.vppapi import VPPApi
+from vpplib.framework import VppTestCase
 
-class TestUDP(unittest.TestCase):
+class TestUDP(VppTestCase):
     """ UDP Test Case """
 
     @classmethod
     def setUpClass(cls):
-        cls.logger = logging.getLogger(__name__)
-        cls.logger.addHandler(logging.NullHandler())
-        cls.logger.debug("{} setUpClass({})".format(__name__.strip('_'), locals()))
         cls.test_name = __name__
         cls.vpp = VPPApi(cls.test_name)
         if not cls.vpp.client:
             cls.logger.critical("The VPP API Client was not created.")
             exit(-1)
-        super().setUpClass()
+        super().setUpClass(cls)
 
     @classmethod
     def tearDownClass(cls):
@@ -28,12 +26,16 @@ class TestUDP(unittest.TestCase):
         cls.vpp.client.connect(cls.vpp.clientname)
         cls.vpp.client.api.session_enable_disable(is_enable=1)
         cls.loopback_interfaces = []
+        cls.create_loopback_interfaces(2)
 
     def tearDown(cls):
         cls.logger.debug("{} tearDown({})".format(__name__.strip('_'), locals()))
-        for i in cls.loopback_interfaces:
-            reply = cls.vpp.client.api.delete_loopback(sw_if_index=i)
-            cls.assertEquals(reply.retval, 0)
+        cls.delete_loopback_interfaces()
+
+
+        #for i in cls.loopback_interfaces:
+        #    reply = cls.vpp.client.api.delete_loopback(sw_if_index=i)
+        #    cls.assertEquals(reply.retval, 0)
 
         reply = cls.vpp.client.api.session_enable_disable(is_enable=0)
         cls.assertEquals(reply.retval, 0)
@@ -41,12 +43,12 @@ class TestUDP(unittest.TestCase):
 
     def test_aaa_create_loopback(cls):
         cls.logger.debug("{} test_aaa_create_loopback({})".format(__name__.strip('_'), locals()))
-        num_loopback_interfaces = 2
-        for i in range(0, num_loopback_interfaces):
-            create_loopback_reply = cls.vpp.client.api.create_loopback()
-            cls.assertEquals(create_loopback_reply.retval, 0)
-            cls.logger.info("Loopback Interface: {}".format(create_loopback_reply))
-            cls.loopback_interfaces.append(create_loopback_reply.sw_if_index)
+        # num_loopback_interfaces = 2
+        #for i in range(0, num_loopback_interfaces):
+        #    create_loopback_reply = cls.vpp.client.api.create_loopback()
+        #    cls.assertEquals(create_loopback_reply.retval, 0)
+        #    cls.logger.info("Loopback Interface: {}".format(create_loopback_reply))
+        #    cls.loopback_interfaces.append(create_loopback_reply.sw_if_index)
 
 ####        table_id = 0
 ####

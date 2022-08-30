@@ -34,11 +34,7 @@ def vpp_main(args):
         verbosity = 0
 
     tests = unittest.TestLoader().discover(start_dir='./tests', pattern='test_*.py')
-    rc = unittest.TextTestRunner(verbosity=verbosity, buffer=True).run(tests).wasSuccessful()
-    #if rc == True:
-    #    exit(0)
-    #else:
-    #    exit(1)
+    unittest.TextTestRunner(verbosity=verbosity, buffer=True).run(tests).wasSuccessful()
 
 if __name__ == '__main__':
     main_parser = argparse.ArgumentParser(
